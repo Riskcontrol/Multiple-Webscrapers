@@ -4,24 +4,27 @@ on:
   schedule:
     - cron: '54 16 * * *'
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
-      # Install dependencies
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
-          pip install beautifulsoup4
-          pip install pandas
-          pip install html5lib
-          pip install lxml
+          pip install requests beautifulsoup4 pandas html5lib lxml certifi
 
+      - name: Check SSL certificate of the target website
+        run: |
+          echo | openssl s_client -connect factcheck.thecable.ng:443 -servername factcheck.thecable.ng
 
       - name: Run email code
         env:
